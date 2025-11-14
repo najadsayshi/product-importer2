@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Acme Product Importer</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Acme Product Importer</h1>
+
+    <section id="upload">
+      <h2>Upload CSV</h2>
+      <input id="file" type="file" accept=".csv" />
+      <button id="uploadBtn">Upload</button>
+      <div id="status"></div>
+      <progress id="progress" value="0" max="100" style="width:100%"></progress>
+      <div id="log"></div>
+    </section>
+
+    <section id="products">
+      <h2>Products</h2>
+      <div>
+        Filter: <input id="filterSku" placeholder="SKU or name" />
+        <button id="refresh">Refresh</button>
+      </div>
+      <table id="productTable">
+        <thead><tr><th>ID</th><th>SKU</th><th>Name</th><th>Price</th><th>Active</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section id="bulk">
+      <h2>Danger Zone</h2>
+      <button id="deleteAll">Delete All Products</button>
+    </section>
+  </div>
+<script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+# Acme Product Importer
+
+Run locally:
+
+1. Copy `.env.example` to `.env` and tweak values if needed.
+2. docker compose up --build
+3. Visit http://localhost:8000/
