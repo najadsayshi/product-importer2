@@ -1,71 +1,190 @@
-🚀 Acme Product Importer
+# 🚀 Acme Product Importer
 
-High-performance CSV product importer with FastAPI, Celery, Redis, PostgreSQL & Docker
+A high-performance, scalable CSV Product Importer built with **FastAPI**, **Celery**, **Redis**, **PostgreSQL**, and **Docker**.  
+Supports importing **500,000+ products**, real-time progress updates, CRUD UI, webhooks, and cloud deployment.
 
-This project implements a scalable backend system capable of importing 500,000+ product records from CSV while remaining responsive.
-It includes:
+---
 
-File upload via UI
+## ✨ Features
 
-Real-time upload progress
+### 📂 CSV Upload (500k+ Records)
+- Upload large CSV files through the UI  
+- Streams file efficiently (no memory overload)  
+- Overwrites duplicates automatically (case-insensitive SKU)  
+- Background processing using Celery  
 
-Celery background processing
+### 📊 Real-Time Import Progress
+- Track progress via job ID  
+- Progress bar + status messages (Parsing, Processing, Completed, Failed)  
+- Error visibility and retry support  
 
-SQL-based product management UI
+### 🛒 Product Management UI
+- View all products  
+- Search & filter (SKU, name, description, active)  
+- Pagination  
+- Create / Update / Delete  
+- Clean, minimal UI  
 
-Webhook management
+### 🗑️ Bulk Delete
+- Delete all products at once  
+- Includes confirmation dialog  
+- Shows success/failure alerts  
 
-Fully containerized via Docker
+### 🔔 Webhook Management
+- Add, edit, delete webhooks  
+- Select event types  
+- Enable/disable  
+- Test webhook and see response  
 
-📦 Features
-✅ 1. Large CSV Upload (500k+ rows)
+### 🐳 Fully Containerized🔌 API Endpoints
+Upload CSV
 
-Upload CSV files through the UI
+POST /upload
+Check Job Progress
 
-Real-time progress updates (polling)
+GET /jobs/{job_id}
+Product CRUD
 
-Handles large files without blocking the server
+GET /products
+POST /products
+PUT /products/{id}
+DELETE /products/{id}
+Bulk Delete
 
-Duplicate SKUs automatically overwritten (case-insensitive)
+POST /products/delete_all
+Webhooks
 
-✅ 2. Background Processing (Celery + Redis)
+Full CRUD + Test endpoints
+☁️ Deployment (Render Example)
 
-File import runs asynchronously using a Celery worker
+You need:
 
-CSV parsed in streaming mode (no memory spike)
+    Web Service (Docker)
 
-Progress updates stored & shown to the user
+    Worker Service (Docker)
 
-✅ 3. Product Management UI
+    Redis Instance
 
-View products (paginated)
+    PostgreSQL Instance
 
-Search by SKU, name, or description
+Required Environment Variables
 
-Create / Update / Delete products
+DATABASE_URL=<render-postgres-url>
+CELERY_BROKER_URL=redis://<redis-host>:6379/1
+CELERY_RESULT_BACKEND=redis://<redis-host>:6379/2
 
-Delete-all option with confirmation
+Web Service Start Command
 
-✅ 4. Webhooks UI
+uvicorn app.main:app --host 0.0.0.0 --port 8000
 
-Add / Edit / Delete webhook URLs
+Worker Service Start Command
 
-Test webhook delivery
+celery -A app.tasks.celery_app worker --loglevel=info -Q imports,webhooks
 
-Supports event types & enable/disable
+🚀 Performance Notes
 
-✅ 5. Fully Containerized
+    CSV streamed line-by-line to prevent memory overload
 
-Docker Compose for local development
+    Bulk upserts for database efficiency
 
-Uses Postgres + Redis services
+    Celery worker ensures non-blocking requests
 
-🛠️ Tech Stack
-Component	Technology
-Backend API	FastAPI
-Async Worker	Celery
-Messaging	Redis
-Database	PostgreSQL
-ORM	SQLAlchemy
-Frontend	HTML + JS (no framework required)
-Deployment	Docker / Render
+    Scalable architecture suitable for high-load environments
+
+
+- Dockerized backend, worker, Redis, and PostgreSQL  
+- Easy local development and cloud deployment  
+
+---
+
+## 🛠 Tech Stack
+
+| Component      | Technology |
+|----------------|-----------|
+| Backend API    | FastAPI |
+| Async Worker   | Celery |
+| Broker         | Redis |
+| Database       | PostgreSQL |
+| ORM            | SQLAlchemy |
+| Frontend       | HTML + JS |
+| Deployment     | Docker / Render |
+
+---
+
+## 📁 Project Structure
+
+acme-product-importer/
+├── backend/
+│ ├── app/
+│ ├── requirements.txt
+│ ├── Dockerfile
+├── frontend/
+│ ├── index.html
+├── docker-compose.yml
+├── .env.example
+└── README.md
+
+
+---
+
+## ⚙️ Local Setup
+
+### 1️⃣ Clone the repository
+```bash
+git clone https://github.com/<your-username>/acme-product-importer.git
+
+cd acme-product-importer
+```
+2.Create env file
+```bash
+cp .env.example .env
+```
+
+3.start apps
+docker compose up --build
+4.open browser
+http://localhost:8000
+
+example format for CSV
+sku,name,description,price
+SKU001,Product A,Description A,10.99
+SKU002,Product B,Description B,14.50
+
+🔌 API Endpoints
+Upload CSV
+
+POST /upload
+
+Check Job Progress
+
+GET /jobs/{job_id}
+
+Product CRUD
+
+GET /products
+POST /products
+PUT /products/{id}
+DELETE /products/{id}
+
+Bulk Delete
+
+POST /products/delete_all
+
+Webhooks
+
+Full CRUD + Test endpoints
+
+☁️ Deployment (Render Example)
+
+You need:
+
+Web Service (Docker)
+
+Worker Service (Docker)
+
+Redis Instance
+
+PostgreSQL Instance
+
+Required Environment Variables
+
