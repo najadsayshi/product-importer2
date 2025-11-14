@@ -65,27 +65,20 @@ def bulk_upsert_products(engine, rows: List[Dict[str, Any]]):
         conn.close()
 
 # Basic product CRUD for UI
-from sqlalchemy import or_
-
 def get_products(db: Session, skip: int = 0, limit: int = 50, filters: dict = None):
     q = db.query(models.Product)
-
     if filters:
-        f = filters.get('sku') or ""
-        if f:
-            like = f"%{f}%"
-            q = q.filter(
-                or_(
-                    models.Product.sku.ilike(like),
-                    models.Product.name.ilike(like),
-                    models.Product.description.ilike(like)
-                )
-            )
-
+        if 'sku' in filters:
+            q = q.filter(models.Product.sku.ilike(f"%{filters['sku']}%"))
+        if 'name' in filters:
+            q = q.filter(models.Product.name.ilike(f"%{filters['name']}%"))
+        if 'description' in filters:
+            q = q.filter(models.Product.description.ilike(f"%{filters['description']}%"))
+        if 'active' in filters:
+            q = q.filter(models.Product.active == filters['active'])
     total = q.count()
     items = q.order_by(models.Product.id).offset(skip).limit(limit).all()
     return items, total
-
 
 def create_product(db: Session, p: schemas.ProductCreate):
     product = models.Product(
