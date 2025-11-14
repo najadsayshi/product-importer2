@@ -1,11 +1,10 @@
 FROM python:3.11-slim
 
-# system deps for psycopg2 and build
 RUN apt-get update && apt-get install -y build-essential libpq-dev gcc && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-COPY backend/requirements.txt .
 
+COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY backend/app /app/app

@@ -1,8 +1,7 @@
-version: "3.8"
 services:
   postgres:
     image: postgres:15
-    env_file: .env.example
+    env_file: .env
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -18,25 +17,33 @@ services:
       - "6379:6379"
 
   backend:
-    build: ./backend
+    build:
+      context: .
+      dockerfile: Dockerfile
     depends_on:
       - postgres
       - redis
-    env_file: .env.example
+    env_file: .env
     ports:
       - "8000:8000"
     volumes:
       - ./backend/app:/app/app
       - ./frontend:/app/frontend
+      - uploads:/tmp/uploads        # 🔥 shared uploads volume
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
   worker:
-    build: ./backend
+    build:
+      context: .
+      dockerfile: Dockerfile
     depends_on:
       - redis
       - postgres
-    env_file: .env.example
-    command: celery -A app.worker.celery_app worker --loglevel=info -Q imports,webhooks
+    env_file: .env
+    volumes:
+      - uploads:/tmp/uploads        # 🔥 same shared volume
+    command: celery -A app.tasks.celery_app worker --loglevel=info -Q imports,webhooks
 
 volumes:
   pgdata:
+  uploads:                           # 🔥 defined shared uploads volume
