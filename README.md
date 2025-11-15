@@ -185,9 +185,9 @@ You can download the products.csv file from the project root to test the import 
 1. Download script.py from the project root.
 
 2. Open the file and modify the line:
-```python  ```
+```python  
 TOTAL_ROWS = 499999
-``` ```
+```
 Set it to any integer value you prefer.
 3. Run the script to generate a CSV file with that number of rows.
 
