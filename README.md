@@ -189,6 +189,7 @@ You can download the products.csv file from the project root to test the import 
 TOTAL_ROWS = 499999
 ```
 Set it to any integer value you prefer.
+
 3. Run the script to generate a CSV file with that number of rows.
 
 You need:
